@@ -1,0 +1,7 @@
+Timestamp,Image Name,Predicted Class,Confidence
+2025-02-02 15:50:01,ISIC_0024306.jpg,mel,1.0
+2025-02-02 15:51:11,ISIC_0024318.jpg,nv,1.0
+2025-02-02 15:51:33,ISIC_0024326.jpg,mel,1.0
+2025-02-02 15:51:48,ISIC_0024361.jpg,nv,1.0
+2025-02-02 15:52:19,images.jpg,mel,1.0
+2025-02-02 15:53:06,images (1).jpg,nv,1.0
