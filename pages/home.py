@@ -45,9 +45,8 @@ Our goal is to empower users with the necessary tools to identify suspicious les
 """)
 st.write("")
 
-st.markdown("""
-    <style>
-    div.stButton > button {
+css ="""
+    .st-key-one > div.stButton > button {
         display: block;
         margin: 0 auto;
         width: 40%;  
@@ -55,11 +54,15 @@ st.markdown("""
         font-size: 90px;
     }
             
-    div.stButton > button p {
+    .st-key-one > div.stButton > button p {
         font-size: 35px
     }
-    </style>
-    """, unsafe_allow_html=True)
+    """
 
-if st.button("Try Our App"):
+st.html(f"<style>{css}</style>")
+
+
+if st.button("Try Our App", key="one"):
     st.switch_page("pages/upload.py")
+
+st.write(st.session_state)

@@ -8,10 +8,23 @@ from navigation import make_sidebar
 def create_database():
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
+
+    # Create the users table with the updated columns, including pdf_path
     c.execute('''CREATE TABLE IF NOT EXISTS users (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                  username TEXT UNIQUE,
-                 password TEXT)''')
+                 password TEXT,
+                 pdf_path TEXT
+                 full_name TEXT,
+                 age INTEGER,
+                 gender TEXT,
+                 family_history TEXT,
+                 previous_conditions TEXT,
+                 smoking_habits TEXT,
+                 alcohol_consumption TEXT,
+                 contact_email TEXT
+                 )''')
+
     conn.commit()
     conn.close()
 
@@ -90,30 +103,3 @@ else:
 
 st.write(st.session_state)
 
-
-# else:
-#     st.sidebar.title("Navigation")
-#     if st.sidebar.button("Home"):
-#         st.write(f"Welcome, {st.session_state['username']}!")
-#     if st.sidebar.button("Upload Image"):
-#         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png", "jpeg"])
-#         # if uploaded_file is not None:
-#             # img = Image.open(uploaded_file)
-#             # st.image(img, caption='Uploaded Image', use_column_width=True)
-#             # st.write("Classifying...")
-
-#             # img = img.resize((224, 224))
-#             # img_array = np.array(img) / 255.0
-#             # img_array = np.expand_dims(img_array, axis=0)
-
-#             # predictions = model.predict(img_array)
-#             # predicted_class = np.argmax(predictions, axis=1)[0]
-#             # confidence = np.max(predictions)
-
-#             # st.write(f"Predicted class: {label_map[predicted_class]}")
-#             # st.write(f"Confidence: {confidence:.2f}")
-#     if st.sidebar.button("Reports"):
-#         st.write("Reports page - Under development.")
-#     if st.sidebar.button("Logout"):
-#         st.session_state["authenticated"] = False
-#         st.rerun()

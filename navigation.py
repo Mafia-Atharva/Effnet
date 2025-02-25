@@ -26,7 +26,7 @@ def make_sidebar():
 
             st.write("")
 
-            if st.button("Log out"):
+            if st.button("Log out",key="logout"):
                 logout()
 
         elif get_current_page_name() != "app":
