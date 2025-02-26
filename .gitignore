@@ -8,3 +8,5 @@ __pycache__/
 users.db
 
 reports
+
+.env
