@@ -4,6 +4,8 @@ import hashlib
 from navigation import make_sidebar
 from time import sleep
 
+st.set_page_config(page_title="Register/Login")
+
 # Function to create the database and user table
 def create_database():
     with sqlite3.connect("users.db") as conn:
@@ -108,5 +110,12 @@ else:
                 sleep(1)
                 st.switch_page("pages/home.py")  # Redirect to the home page
 
-# Debugging: Display session state
-st.write("Session State:", st.session_state)
+
+
+hide_default_format = """
+       <style>
+       #MainMenu {visibility: hidden; }
+       footer {visibility: hidden;}
+       </style>
+       """
+st.markdown(hide_default_format, unsafe_allow_html=True)

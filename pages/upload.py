@@ -9,12 +9,11 @@ from reportlab.lib.utils import ImageReader
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-from gem_layer import GeMPoolingLayer
 from navigation import make_sidebar
 from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
-import re
+
 
 # Initialize session state for disclaimer and form submission
 if "disclaimer_accepted" not in st.session_state:
@@ -54,16 +53,16 @@ def split_text(canvas, text, max_width, font_name, font_size):
         lines.append(' '.join(current_line))
     return lines
 
+st.set_page_config(page_title="Upload Page")
 
 # Sidebar
 make_sidebar()
 
 # Load the model with custom objects
-model = tf.keras.models.load_model('efficientnet_gem_model_1.h5',
-                                   custom_objects={'GeMPoolingLayer': GeMPoolingLayer})
+model = tf.keras.models.load_model('efficientnet_gem_model_1.h5')
 
 # Label mapping
-label_map = {0: 'Actinic Keratoses and Intraepithelial Carcinoma (Bowen’s Disease)', 
+label_map = {0: 'Actinic Keratoses and Intraepithelial Carcinoma', 
              1: 'Basal Cell Carcinoma', 
              2: 'Benign Keratosis', 
              3: 'Dermatofibroma', 
@@ -83,10 +82,9 @@ if not st.session_state.disclaimer_accepted:
         <p><strong>Important:</strong> This tool is not intended to be used as a diagnostic tool. Consult with a healthcare provider for any concerns about your health.</p>
     """, unsafe_allow_html=True)
 
-    # "I agree" button
     if st.button("I agree"):
-        st.session_state.disclaimer_accepted = True  # Mark disclaimer as accepted
-        st.rerun()  # Rerun the app to update the UI
+        st.session_state.disclaimer_accepted = True  # Update session state
+        st.rerun()
 else:
     conn = sqlite3.connect("users.db")
     c = conn.cursor()
@@ -95,7 +93,7 @@ else:
     conn.close()
 
     if user_data and user_data[0]:
-        st.session_state.form_submitted = True  # Skip form if data already exists
+        st.session_state.form_submitted = True  # Skip form if data exists
 
     if not st.session_state.form_submitted:
         with st.form("user_info_form"):
@@ -121,9 +119,9 @@ else:
                 conn.commit()
                 conn.close()
 
-                st.session_state.form_submitted = True  # Mark the form as submitted
+                st.session_state.form_submitted = True
                 st.success("Information updated successfully!")
-                st.rerun()  # Rerun the app to update the UI
+                # No need for st.rerun() here; the state change will update the UI
             else:
                 st.warning("Please fill in all required fields.")
     
@@ -154,7 +152,7 @@ else:
             if not st.session_state.get('report_generated', False):
                 # Process image and generate PDF
                 img = Image.open(uploaded_file)
-                st.image(img, caption='Uploaded Image', use_column_width=True)
+                st.image(img, caption='Uploaded Image', use_container_width=True)
                 st.write("Classifying...")
 
                 # Preprocess the image
@@ -310,3 +308,4 @@ else:
                 )
             
             
+st.write(st.session_state)

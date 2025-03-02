@@ -47,15 +47,23 @@ st.write("")
 
 css ="""
     .st-key-one > div.stButton > button {
+        background: linear-gradient(to right, #FF416C, #FF4B2B);
+        border: none;
+        border-radius: 40px;
+        color: white;
+        padding: 10px 20px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
         display: block;
-        margin: 0 auto;
-        width: 40%;  
-        height: 70px;   
-        font-size: 90px;
+        margin: 2rem auto;
+    }
+
+    .st-key-one button:hover {
+        transform: scale(1.05);
     }
             
     .st-key-one > div.stButton > button p {
-        font-size: 35px
+        font-size: 28px
     }
     """
 
@@ -65,4 +73,3 @@ st.html(f"<style>{css}</style>")
 if st.button("Try Our App", key="one"):
     st.switch_page("pages/upload.py")
 
-st.write(st.session_state)

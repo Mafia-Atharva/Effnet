@@ -1,6 +1,8 @@
 import streamlit as st
 from navigation import make_sidebar
 
+st.set_page_config(page_title="Appendix")
+
 # Call the make_sidebar function to handle the sidebar and get the selected section
 make_sidebar()
 
@@ -101,8 +103,4 @@ project_members = ["Harshwardhan Gaikwad", "Atharva Bhosale", "Krushnakant Babal
 for member in project_members:
     st.markdown(f"- {member}")
 
-# Footer Section for Additional Information
-st.sidebar.title("Additional Information")
-st.sidebar.markdown("""
-For more details on the project, feel free to reach out via the contact information provided.
-""")
+
