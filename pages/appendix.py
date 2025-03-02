@@ -1,10 +1,12 @@
 import streamlit as st
 from navigation import make_sidebar
+from utils import hide_streamlit_style
 
 st.set_page_config(page_title="Appendix")
 
 # Call the make_sidebar function to handle the sidebar and get the selected section
 make_sidebar()
+hide_streamlit_style()
 
 # Section: Appendix
 st.title("Appendix")

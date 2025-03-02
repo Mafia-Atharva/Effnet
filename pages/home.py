@@ -1,7 +1,9 @@
 import streamlit as st
 from navigation import make_sidebar
+from utils import hide_streamlit_style
 
 make_sidebar()
+hide_streamlit_style()
 
 st.title("What is skin cancer?")
 

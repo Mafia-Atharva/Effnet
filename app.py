@@ -3,9 +3,10 @@ import sqlite3
 import hashlib
 from navigation import make_sidebar
 from time import sleep
+from utils import hide_streamlit_style
 
 st.set_page_config(page_title="Register/Login")
-
+hide_streamlit_style()
 # Function to create the database and user table
 def create_database():
     with sqlite3.connect("users.db") as conn:
@@ -110,12 +111,3 @@ else:
                 sleep(1)
                 st.switch_page("pages/home.py")  # Redirect to the home page
 
-
-
-hide_default_format = """
-       <style>
-       #MainMenu {visibility: hidden; }
-       footer {visibility: hidden;}
-       </style>
-       """
-st.markdown(hide_default_format, unsafe_allow_html=True)

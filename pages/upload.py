@@ -13,7 +13,7 @@ from navigation import make_sidebar
 from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
-
+from utils import hide_streamlit_style
 
 # Initialize session state for disclaimer and form submission
 if "disclaimer_accepted" not in st.session_state:
@@ -57,6 +57,7 @@ st.set_page_config(page_title="Upload Page")
 
 # Sidebar
 make_sidebar()
+hide_streamlit_style()
 
 # Load the model with custom objects
 model = tf.keras.models.load_model('efficientnet_gem_model_1.h5')
