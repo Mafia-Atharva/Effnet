@@ -1,3 +1,4 @@
+# requirements.txt for Python 3.12
 azure-ai-inference==1.0.0b9
 azure-core==1.32.0
 numpy==2.0.2
@@ -5,4 +6,4 @@ pandas==2.2.3
 pillow==11.1.0
 reportlab==4.3.1
 streamlit==1.42.2
-tensorflow==2.18.0py
+tensorflow>=2.19.0  # Latest version with Python 3.12 support
