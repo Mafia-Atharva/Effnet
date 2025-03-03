@@ -283,6 +283,7 @@ else:
                         c_pdf.drawString(40, y, line)
                         y -= 15
 
+                    y-=10
                     # Disclaimer
                     c_pdf.setFont("Helvetica-Oblique", 10)
                     c_pdf.drawString(40, 40, "Disclaimer: This report is not a replacement for professional medical diagnosis.")
