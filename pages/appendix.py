@@ -9,11 +9,11 @@ make_sidebar()
 hide_streamlit_style()
 
 # Section: Appendix
-st.title("Appendix")
+st.title("Skin Cancer Detection Project Overview")
 
 st.markdown("""
 ### 1. Dataset Details
-- **Dataset**: ISIC Archive, DermNet dataset, or another appropriate dataset.
+- **Dataset**: HAM10000 dataset, which contains a large collection of dermatoscopic images for skin lesion classification.
 - **Preprocessing**: Image resizing, normalization, splitting into training/validation/testing sets.
 
 ### 2. Machine Learning Model
@@ -52,28 +52,28 @@ research_sections = [
     {
         "title": "1. Artificial Intelligence in Skin Cancer Detection",
         "content": "Deep learning models, especially Convolutional Neural Networks (CNNs), are achieving dermatologist-level accuracy in detecting melanoma from dermatoscopic images. Research focuses on improving AI models for diverse skin tones and skin types.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Dermatoscope.jpg/320px-Dermatoscope.jpg",
+        "image": "images/cancer1.jpeg",
         "caption": "AI in Skin Cancer Detection",
         "link": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7442686/"
     },
     {
         "title": "2. Personalized Cancer Therapy",
         "content": "Research explores tailored treatment based on genetic mutations in melanoma. Immunotherapy and targeted therapies are showing promising results for advanced-stage melanomas.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Oncology_nurse_wearing_PPE%2C_in_front_of_the_cytotoxic_drug_safety_cabinet%2C_at_Meridiaan_medical_center.jpg/320px-Oncology_nurse_wearing_PPE%2C_in_front_of_the_cytotoxic_drug_safety_cabinet%2C_at_Meridiaan_medical_center.jpg",
+        "image": "images/personalized .jpeg",
         "caption": "Personalized Cancer Therapy",
         "link": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6068306/"
     },
     {
         "title": "3. Non-Invasive Diagnostic Methods",
         "content": "Advances in non-invasive imaging techniques, such as reflectance confocal microscopy (RCM), enhance early detection accuracy. Research integrates these methods with AI-based diagnostics for faster results.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Confocal_Scanning_Laser_Microscope.jpg/320px-Confocal_Scanning_Laser_Microscope.jpg",
+        "image": "images/non inavse tech.jpeg",
         "caption": "Non-Invasive Diagnostic Methods",
         "link": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6070861/"
     },
     {
         "title": "4. Public Awareness and Early Detection",
         "content": "Emphasizes public health campaigns for regular skin checks, sun protection, and the role of self-examinations in early detection.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Sunscreen_is_a_lotion%2C_spray%2C_gel_or_other_topical_product_that_absorbs_or_reflects_some_of_the_sun%27s_ultraviolet_radiation.jpg/320px-Sunscreen_is_a_lotion%2C_spray%2C_gel_or_other_topical_product_that_absorbs_or_reflects_some_of_the_sun%27s_ultraviolet_radiation.jpg",
+        "image": "images/skin-cancer-awareness.jpeg",
         "caption": "Public Awareness and Early Detection",
         "link": "https://www.cancer.org/latest-news.html"
     }
@@ -95,7 +95,7 @@ st.markdown("""
 **Dr. D.P.Gaikwad**  
 Professor, Department of Computer Engineering  
 [Aissms Coe, Pune]  
-Email: [Guide's Email]
+Email: [dpgaikwad@aissmscoe.com]
 """)
 
 # Project Members Section
