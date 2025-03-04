@@ -83,7 +83,11 @@ for section in research_sections:
     st.subheader(section["title"])
     st.write(section["content"])
     st.image(section["image"], caption=section["caption"], use_container_width=True)
-    st.markdown(f"[Click here to read the research paper]({section['link']})")
+    
+    # Extract clean title by removing the numbering
+    clean_title = section["title"].split(". ", 1)[1]
+    # Create link text with the clean title
+    st.markdown(f"[{clean_title} Research Paper]({section['link']})")
 
 # Section: Project Team
 st.title("Project Team")
