@@ -90,7 +90,7 @@ st.title("Project Team")
 
 # Guide's Section
 st.subheader("Guide")
-st.image("https://example.com/path_to_guide_photo.jpg", caption="Dr. D.P.Gaikwad", use_container_width=True)
+st.image("images/1.-Prof.-gaikwad.jpg", caption="Dr. D.P.Gaikwad", use_container_width=True)
 st.markdown("""
 **Dr. D.P.Gaikwad**  
 Professor, Department of Computer Engineering  
