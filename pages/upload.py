@@ -14,6 +14,14 @@ from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
 from utils import hide_streamlit_style
+from time import sleep
+import folium
+from streamlit_folium import st_folium
+import requests
+import pandas as pd
+from streamlit_js_eval import *
+import overpy
+
 
 # Initialize session state for disclaimer and form submission
 if "disclaimer_accepted" not in st.session_state:
@@ -24,6 +32,9 @@ if "form_submitted" not in st.session_state:
 
 if "pdf_bytes" not in st.session_state:
     st.session_state.pdf_bytes = None
+
+if "cancer_detected" not in st.session_state:
+    st.session_state.cancer_detected=False
 
 def split_text(canvas, text, max_width, font_name, font_size):
     lines = []
@@ -53,14 +64,86 @@ def split_text(canvas, text, max_width, font_name, font_size):
         lines.append(' '.join(current_line))
     return lines
 
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def get_hospitals(lat, lon, radius=10000):
+    api = overpy.Overpass()
+    query = f"""
+    [out:json][timeout:25];
+    // Fetch oncology‑specialized hospitals and clinics within a given radius
+    (
+    // Nodes
+    node
+        ["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    node
+        ["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    node
+        ["healthcare"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+    node
+        ["amenity"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+
+    // Ways (often used for building outlines/areas)
+    way
+        ["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    way
+        ["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    way
+        ["healthcare"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+    way
+        ["amenity"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+
+    // Multipolygon relations (areas)
+    relation
+        ["type"="multipolygon"]["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    relation
+        ["type"="multipolygon"]["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
+        (around:{radius},{lat},{lon});
+    relation
+        ["type"="multipolygon"]["healthcare"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+    relation
+        ["type"="multipolygon"]["amenity"~"hospital|clinic"]["department"="oncology"]
+        (around:{radius},{lat},{lon});
+    );
+    out center tags;
+    """
+    
+    try:
+        result = api.query(query)
+        return [(float(node.lat), float(node.lon), node.tags.get('name', 'Unknown')) 
+                for node in result.nodes]
+    except Exception as e:
+        st.error(f"Error fetching hospital data: {e}")
+        return []
+
 st.set_page_config(page_title="Upload Page")
+
+location = get_geolocation()
 
 # Sidebar
 make_sidebar()
 hide_streamlit_style()
 
+@st.cache_resource
+def load_model():
+    return tf.keras.models.load_model("test_eff (1).h5")
+
 # Load the model with custom objects
-model = tf.keras.models.load_model('efficientnet_gem_model_1.h5')
+model = load_model()
+
+if 'map_state' not in st.session_state:
+    st.session_state.map_state = {
+        'center': [location['coords']['latitude'], location['coords']['longitude']],
+        'zoom': 13
+    }
 
 # Label mapping
 label_map = {0: 'Actinic Keratoses and Intraepithelial Carcinoma', 
@@ -122,7 +205,8 @@ else:
 
                 st.session_state.form_submitted = True
                 st.success("Information updated successfully!")
-                # No need for st.rerun() here; the state change will update the UI
+                sleep(2)
+                st.rerun()
             else:
                 st.warning("Please fill in all required fields.")
     
@@ -152,14 +236,13 @@ else:
             
             if not st.session_state.get('report_generated', False):
                 # Process image and generate PDF
-                img = Image.open(uploaded_file)
-                st.image(img, caption='Uploaded Image', use_container_width=True)
+                image = Image.open(uploaded_file).resize((224, 224))
+                st.image(image, caption='Uploaded Image', use_container_width=True)
                 st.write("Classifying...")
 
                 # Preprocess the image
-                img = img.resize((224, 224))
-                img_array = np.array(img) / 255.0
-                img_array = np.expand_dims(img_array, axis=0)
+                img_array = np.array(image) / 255.0  # Normalize
+                img_array = np.expand_dims(img_array, axis=0)  # Expand dimensions
 
                 # Make prediction
                 predictions = model.predict(img_array)
@@ -169,10 +252,11 @@ else:
                 # Display results
                 st.write(f"Predicted class: {label_map[predicted_class]}")
                 st.write(f"Confidence: {confidence:.2f}")
+                st.session_state.cancer_detected=True
 
             endpoint = "https://models.inference.ai.azure.com"
             model_name = "gpt-4o"
-            token = os.environ["GITHUB_TOKEN"]
+            token = os.environ.get("GITHUB_TOKEN")
             if predicted_class is None:
                 pass
             else:
@@ -187,9 +271,7 @@ else:
                 )
 
                 user_msg = UserMessage(
-                    f"I have detected {detected_cancer} in a patient's skin lesion image. Could you please provide a short overview of this condition in a single paragraph? "
-                    "Include details such as a clear description of the cancer, common causes and risk factors, typical symptoms, diagnostic methods, treatment options (with potential side effects), prognosis, and any recommendations for follow-up care. "
-                    "Also, mention any preventive measures or early detection strategies relevant to this cancer."
+                    f"I have detected {detected_cancer} in a patient's skin lesion image. Provide possible treatment options in short."
                 )
 
                 
@@ -308,6 +390,39 @@ else:
                     file_name=st.session_state.pdf_filename,
                     mime="application/pdf"
                 )
-            
-            
-st.write(st.session_state)
+
+                hospitals = get_hospitals(location['coords']['latitude'], location['coords']['longitude'])
+                m = folium.Map(
+                location=st.session_state.map_state['center'],
+                zoom_start=st.session_state.map_state['zoom'],
+                control_scale=True
+            )
+
+                # Add hospitals to the map
+                for lat, lon, name in hospitals:
+                    folium.Marker(
+                        [lat, lon],
+                        popup=name,
+                        icon=folium.Icon(color='red', icon='plus-sign')
+                    ).add_to(m)
+
+                # Add current location marker
+                folium.Marker(
+                    [location['coords']['latitude'], location['coords']['longitude']],
+                    popup='Your Location',
+                    icon=folium.Icon(color='blue')
+                ).add_to(m)
+
+                # Display the map and handle map state
+                map_data = st_folium(
+                    m,
+                    width=700,
+                    height=500,
+                    key='hospital_map',
+                    returned_objects=[]
+                )
+
+                # Update session state with current map view
+                if map_data.get('center'):
+                    st.session_state.map_state['center'] = [map_data['center']['lat'], map_data['center']['lng']]
+                    st.session_state.map_state['zoom'] = map_data['zoom']
