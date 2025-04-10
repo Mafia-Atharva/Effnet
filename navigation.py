@@ -28,7 +28,7 @@ def make_sidebar():
             if st.button("Log out",key="logout"):
                 logout()
 
-        elif get_current_page_name() != "app":
+        elif get_current_page_name() != "streamlit_app":
             # Redirect unauthorized users back to login page
             st.switch_page("streamlit_app.py")
 
