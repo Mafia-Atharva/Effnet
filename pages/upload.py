@@ -256,7 +256,7 @@ else:
 
             endpoint = "https://models.inference.ai.azure.com"
             model_name = "gpt-4o"
-            token = os.environ.get("GITHUB_TOKEN")
+            token = st.secrets["GITHUB_TOKEN"]
             if predicted_class is None:
                 pass
             else:
