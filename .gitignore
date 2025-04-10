@@ -12,3 +12,5 @@ reports
 .env
 
 *.cmd
+
+secrets.toml
