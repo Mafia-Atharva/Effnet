@@ -30,10 +30,10 @@ def make_sidebar():
 
         elif get_current_page_name() != "app":
             # Redirect unauthorized users back to login page
-            st.switch_page("app.py")
+            st.switch_page("streamlit_app.py")
 
 def logout():
     st.session_state.logged_in = False
     st.info("Logged out successfully!")
     sleep(0.5)
-    st.switch_page("app.py")
+    st.switch_page("streamlit_app.py")
