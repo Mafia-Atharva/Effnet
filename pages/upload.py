@@ -68,53 +68,80 @@ def split_text(canvas, text, max_width, font_name, font_size):
 def get_hospitals(lat, lon, radius=10000):
     api = overpy.Overpass()
     query = f"""
-    [out:json][timeout:25];
-    // Fetch oncology‑specialized hospitals and clinics within a given radius
-    (
-    // Nodes
-    node
-        ["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    node
-        ["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    node
-        ["healthcare"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
-    node
-        ["amenity"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
+[out:json][timeout:90];
+// Fetch broader set of hospitals/clinics with oncology-related tags or names
+(
+  // Nodes
+  node
+    ["healthcare"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  node
+    ["amenity"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  node
+    ["healthcare"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  node
+    ["amenity"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  node
+    ["name"~"oncology|cancer|chemotherapy|radiotherapy|radiation|cancer care|oncology unit", i]
+    (around:{radius},{lat},{lon});
 
-    // Ways (often used for building outlines/areas)
-    way
-        ["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    way
-        ["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    way
-        ["healthcare"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
-    way
-        ["amenity"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
+  // Ways
+  way
+    ["healthcare"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  way
+    ["amenity"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  way
+    ["healthcare"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  way
+    ["amenity"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  way
+    ["name"~"oncology|cancer|chemotherapy|radiotherapy|radiation|cancer care|oncology unit", i]
+    (around:{radius},{lat},{lon});
 
-    // Multipolygon relations (areas)
-    relation
-        ["type"="multipolygon"]["healthcare"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    relation
-        ["type"="multipolygon"]["amenity"~"hospital|clinic"]["healthcare:speciality"="oncology"]
-        (around:{radius},{lat},{lon});
-    relation
-        ["type"="multipolygon"]["healthcare"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
-    relation
-        ["type"="multipolygon"]["amenity"~"hospital|clinic"]["department"="oncology"]
-        (around:{radius},{lat},{lon});
-    );
-    out center tags;
-    """
+  // Relations (often multipolygon hospital campuses)
+  relation
+    ["type"="multipolygon"]
+    ["healthcare"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  relation
+    ["type"="multipolygon"]
+    ["amenity"~"hospital|clinic"]
+    ["healthcare:speciality"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  relation
+    ["type"="multipolygon"]
+    ["healthcare"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  relation
+    ["type"="multipolygon"]
+    ["amenity"~"hospital|clinic"]
+    ["department"~"oncology|cancer|chemotherapy|radiation|radiotherapy"]
+    (around:{radius},{lat},{lon});
+  relation
+    ["name"~"oncology|cancer|chemotherapy|radiotherapy|radiation|cancer care|oncology unit", i]
+    (around:{radius},{lat},{lon});
+);
+out center tags;
+"""
+
+
     
     try:
         result = api.query(query)
