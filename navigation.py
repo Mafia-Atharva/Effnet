@@ -1,19 +1,19 @@
 import streamlit as st
 from time import sleep
 from streamlit.runtime.scriptrunner import get_script_run_ctx
-from streamlit.source_util import get_pages
+from pathlib import Path
 
+# Determine the current page name from the running script path
 def get_current_page_name():
     ctx = get_script_run_ctx()
     if ctx is None:
         raise RuntimeError("Couldn't get script context")
+    # Extract the base filename (without extension) as the page name
+    return Path(ctx.main_script_path).stem
 
-    pages = get_pages("")
-
-    return pages[ctx.page_script_hash]["page_name"]
+# Build sidebar navigation
 
 def make_sidebar():
-
     with st.sidebar:
         st.title("Navigation")
         st.write("")
@@ -25,15 +25,16 @@ def make_sidebar():
 
             st.write("")
 
-            if st.button("Log out",key="logout"):
+            if st.button("Log out", key="logout"):
                 logout()
 
+        # Redirect unauthorized users back to login page
         elif get_current_page_name() != "streamlit_app":
-            # Redirect unauthorized users back to login page
-            st.switch_page("streamlit_app.py")
+            st.switch_page("streamlit_app")
+
 
 def logout():
     st.session_state.logged_in = False
     st.info("Logged out successfully!")
     sleep(0.5)
-    st.switch_page("streamlit_app.py")
+    st.switch_page("streamlit_app")
