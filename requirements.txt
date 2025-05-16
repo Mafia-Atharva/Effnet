@@ -49,6 +49,7 @@ Flask-SQLAlchemy==3.0.3
 Flask-WTF==1.1.1
 flatbuffers==24.3.25
 fonttools==4.38.0
+folium==0.19.5
 fqdn==1.5.1
 fsspec==2024.9.0
 gast==0.6.0
