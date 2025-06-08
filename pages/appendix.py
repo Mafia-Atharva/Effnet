@@ -14,19 +14,19 @@ st.title("Skin Cancer Detection Project Overview")
 st.markdown("""
 ### 1. Dataset Details
 - **Dataset**: HAM10000 dataset, which contains a large collection of dermatoscopic images for skin lesion classification.
-- **Preprocessing**: Image resizing, normalization, splitting into training/validation/testing sets.
+- **Preprocessing**: Image resizing, normalization, splitting into training/validation/testing sets. 
 
 ### 2. Machine Learning Model
-- **Model Types**: Convolutional Neural Networks (ResNet, EfficientNet).
-- **Handling Data Imbalance**: Oversampling, SMOTE.
+- **Model Types**: Convolutional Neural Networks (EfficientNet-B0).
+- **Handling Data Imbalance**: Oversampling.
 - **Performance Metrics**: Accuracy, F1-score, precision, recall.
 
 ### 3. Libraries and Tools
-- **Libraries**: TensorFlow, Keras, NumPy, Pandas, OpenCV, etc.
+- **Libraries**: TensorFlow, Keras, NumPy, Pandas, Scikit-learn , Matplotlib etc.
 - **Streamlit** for web app development.
 
 ### 4. Deployment
-- Install dependencies and use `streamlit run your_app.py` to start the app.
+- Install dependencies and use `streamlit run streamlit_app.py` to start the app.
 - Include model loading mechanism and inference function in the app.
 """)
 
